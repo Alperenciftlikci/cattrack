@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-itunes-app" content="app-id=0000000000">
+<title>Mochi — Cat Care AI</title>
+<meta name="description" content="Cats hide illness until it's too late. Mochi's AI helps you read the signs — eye scans, litter analysis, mood reader, and more.">
+<meta property="og:title" content="Mochi — Cat Care AI">
+<meta property="og:description" content="The AI care companion for your cat. Catch what they're hiding.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://alperencift.github.io/mochi-website/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐱%3C/text%3E%3C/svg%3E">
+<style>
+:root {
+  --primary: #FF9B7A;
+  --primary-dark: #E87A57;
+  --cream: #FFF4E8;
+  --mint: #7DD3A4;
+  --coral: #FF6B6B;
+  --bg: #FFFBF6;
+  --surface: #FFFFFF;
+  --text: #2C2C2E;
+  --text-secondary: #6B6B70;
+  --border: #F0E6DA;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --max-width: 1100px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1C1C1E;
+    --surface: #2C2C2E;
+    --text: #F5F5F7;
+    --text-secondary: #A8A8AD;
+    --cream: #2A2522;
+    --border: #3A3A3C;
+    --primary: #FFAD8E;
+  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255, 251, 246, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+@media (prefers-color-scheme: dark) { nav { background: rgba(28, 28, 30, 0.85); } }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-size: 22px; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; }
+.logo-emoji { font-size: 28px; }
+.nav-links { display: flex; gap: 24px; align-items: center; }
+.nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+.nav-links a:hover { color: var(--primary-dark); }
+.cta-pill {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white !important;
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+.cta-pill:hover { transform: translateY(-1px); }
+
+.hero {
+  padding: 80px 0 60px;
+  background: linear-gradient(180deg, var(--cream) 0%, var(--bg) 100%);
+  text-align: center;
+}
+.hero h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.hero .tagline {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--text-secondary);
+  max-width: 580px;
+  margin: 0 auto 32px;
+}
+.hero-emoji { font-size: 96px; display: block; margin-bottom: 24px; animation: bob 3s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.appstore-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
+
+.appstore-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: #000;
+  color: white;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.appstore-badge:hover { background: #1a1a1a; }
+.appstore-badge svg { width: 28px; height: 28px; fill: white; }
+
+.mockup {
+  margin: 48px auto 0;
+  width: 280px;
+  height: 580px;
+  background: #1C1C1E;
+  border-radius: 48px;
+  padding: 12px;
+  box-shadow: 0 30px 80px rgba(255, 155, 122, 0.3);
+  position: relative;
+}
+.mockup::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 28px;
+  background: #1C1C1E;
+  border-radius: 14px;
+  z-index: 10;
+}
+.mockup-screen {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, var(--cream), var(--surface));
+  border-radius: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+.mockup-emoji { font-size: 80px; margin-bottom: 16px; }
+.mockup-title { font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; }
+.mockup-row { background: var(--surface); padding: 10px 16px; border-radius: 12px; width: 100%; margin: 4px 0; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+
+section { padding: 80px 0; }
+section h2 {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+section .sub {
+  text-align: center;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 48px;
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.feature-card {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 32px 24px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s;
+}
+.feature-card:hover { transform: translateY(-4px); }
+.feature-emoji { font-size: 48px; display: block; margin-bottom: 16px; }
+.feature-card h3 { font-size: 20px; margin-bottom: 8px; }
+.feature-card p { color: var(--text-secondary); font-size: 15px; }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.step { text-align: center; padding: 24px; }
+.step-num {
+  display: inline-flex;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+.step h3 { font-size: 18px; margin-bottom: 8px; }
+.step p { color: var(--text-secondary); font-size: 14px; }
+
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.price-card {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 32px 24px;
+  border: 2px solid var(--border);
+  position: relative;
+}
+.price-card.featured { border-color: var(--primary); }
+.price-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-dark);
+  color: white;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+}
+.price-card h3 { margin-bottom: 8px; }
+.price-card .price { font-size: 36px; font-weight: 800; color: var(--primary-dark); margin-bottom: 8px; }
+.price-card .desc { font-size: 14px; color: var(--text-secondary); }
+
+details {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+summary { font-weight: 600; cursor: pointer; padding: 4px 0; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: '+'; font-size: 24px; color: var(--primary); transition: transform 0.2s; }
+details[open] summary::after { transform: rotate(45deg); }
+details p { margin-top: 12px; color: var(--text-secondary); }
+.faq { max-width: 720px; margin: 0 auto; }
+
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 48px 0 24px;
+  text-align: center;
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+.footer-links a:hover { color: var(--primary-dark); }
+.copyright { color: var(--text-secondary); font-size: 13px; }
+
+.reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 600px) {
+  .nav-links a:not(.cta-pill) { display: none; }
+  section { padding: 60px 0; }
+  .mockup { transform: scale(0.85); }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="container nav-inner">
+    <div class="logo"><span class="logo-emoji">🐱</span> Mochi</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://apps.apple.com/app/id0000000000" class="cta-pill">Download</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <span class="hero-emoji">🐱</span>
+    <h1>Cats hide illness<br>until it's too late.</h1>
+    <p class="tagline">Mochi's AI helps you read the signs — before they become emergencies. Eye scans, litter analysis, mood reader, and more.</p>
+    <div class="appstore-row">
+      <a href="https://apps.apple.com/app/id0000000000" class="appstore-badge">
+        <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+        <div>
+          <div style="font-size:11px;line-height:1">Download on the</div>
+          <div style="font-size:18px;font-weight:800;line-height:1">App Store</div>
+        </div>
+      </a>
+    </div>
+    <div class="mockup">
+      <div class="mockup-screen">
+        <div class="mockup-emoji">🐱</div>
+        <div class="mockup-title">Mochi · 5y · Tabby Mix</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:16px">🔥 7-day streak</div>
+        <div class="mockup-row">👁 Eye Scan · Normal</div>
+        <div class="mockup-row">💧 Litter · 2 today</div>
+        <div class="mockup-row">🎙 Translator ready</div>
+        <div class="mockup-row" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;">📝 Daily Check-in (30s)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="container">
+    <h2>Five pillars of cat care</h2>
+    <p class="sub">Every feature targets what cats biologically hide.</p>
+    <div class="feature-grid">
+      <div class="feature-card reveal">
+        <span class="feature-emoji">🔍</span>
+        <h3>Health Scanner</h3>
+        <p>Photo-based AI for eyes, skin, dental, and ear conditions. Catch nictitating membrane, tartar, ringworm before they progress.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-emoji">💧</span>
+        <h3>Litter Box AI</h3>
+        <p>Analyze stool & urine photos. 48-hour urinary emergency alerts. Pattern tracking for kidney and diabetes warning signs.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-emoji">🎙</span>
+        <h3>Cat Translator</h3>
+        <p>Record meows, get interpreted meanings — greeting, demand, stress, hunting. Science-backed AI classification.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-emoji">📸</span>
+        <h3>Mood Reader</h3>
+        <p>Read ear position, pupils, tail, posture from a photo. Detect stress your cat is masking.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-emoji">💬</span>
+        <h3>AI Behavior Chat</h3>
+        <p>Ask anything about your cat. Mochi knows their age, breed, lifestyle — and gives contextualized advice.</p>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-emoji">📄</span>
+        <h3>Vet Visit PDF</h3>
+        <p>One-tap export of scans, litter logs, weight, behavior — hand to your vet for a smarter appointment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="background: var(--cream);">
+  <div class="container">
+    <h2>How Mochi works</h2>
+    <p class="sub">From your couch to early detection in three steps.</p>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <h3>Tell us about your cat</h3>
+        <p>60-second setup. Name, age, photo. We tailor the care plan to your cat.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <h3>Scan when something's off</h3>
+        <p>Eye looks puffy? Litter clump huge? Snap a photo, get instant AI analysis.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <h3>Catch issues early</h3>
+        <p>Track patterns. Get alerts. Walk into the vet with data — not guesses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="container">
+    <h2>Simple pricing</h2>
+    <p class="sub">3 days free. Cancel anytime.</p>
+    <div class="pricing">
+      <div class="price-card featured reveal">
+        <span class="price-badge">MOST POPULAR</span>
+        <h3>Weekly</h3>
+        <div class="price">$4.99<span style="font-size:16px;color:var(--text-secondary)">/wk</span></div>
+        <p class="desc">3-day free trial · cancel anytime</p>
+      </div>
+      <div class="price-card reveal">
+        <h3>Yearly</h3>
+        <div class="price">$39.99<span style="font-size:16px;color:var(--text-secondary)">/yr</span></div>
+        <p class="desc">Save 87% — best value</p>
+      </div>
+      <div class="price-card reveal">
+        <h3>Lifetime</h3>
+        <div class="price">$79.99</div>
+        <p class="desc">One-time. Forever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="background: var(--cream);">
+  <div class="container">
+    <h2>Frequently asked</h2>
+    <div class="faq">
+      <details class="reveal"><summary>Is the AI as accurate as a vet?</summary><p>No — Mochi is an early-warning tool, not a diagnostic device. The AI flags patterns and concerns to discuss with your vet, who remains the authority on medical decisions.</p></details>
+      <details class="reveal"><summary>Does Mochi work with multiple cats?</summary><p>Yes. Add unlimited cat profiles. The compatibility checker also helps multi-cat households read dynamics.</p></details>
+      <details class="reveal"><summary>What happens after the 3-day free trial?</summary><p>You'll be billed at the rate you selected. Cancel anytime from the App Store before the trial ends to avoid charges.</p></details>
+      <details class="reveal"><summary>Is my data private?</summary><p>Yes. Photos and audio are processed via Firebase AI Logic with App Check enforcement. You can delete all your data anytime from Settings.</p></details>
+      <details class="reveal"><summary>Does the Cat Translator really work?</summary><p>Cat meows evolved primarily for human communication — frequency and pattern carry meaning. Mochi classifies them into known vocalization categories. Treat it as informed entertainment plus useful behavior data.</p></details>
+      <details class="reveal"><summary>What's the difference vs TTcare or MeowTalk?</summary><p>Mochi is cat-only (not dog/cat mixed), all-in-one (scans + litter + translator + chat + vet PDF), and uses Gemini 2.5 multimodal AI for richer analysis.</p></details>
+    </div>
+  </div>
+</section>
+
+<section style="text-align:center; padding-bottom: 100px;">
+  <div class="container">
+    <h2>Read the signs your cat can't tell you about.</h2>
+    <p class="sub">Download Mochi today. First 3 days free.</p>
+    <a href="https://apps.apple.com/app/id0000000000" class="appstore-badge">
+      <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+      <div>
+        <div style="font-size:11px;line-height:1">Download on the</div>
+        <div style="font-size:18px;font-weight:800;line-height:1">App Store</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="logo" style="justify-content:center;margin-bottom:16px"><span class="logo-emoji">🐱</span> Mochi</div>
+    <div class="footer-links">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Terms of Use</a>
+      <a href="mailto:support@mochi-app.com">Contact</a>
+    </div>
+    <p class="copyright">© 2026 Mochi · Cat Care AI · Made with ❤️ for cats and their humans</p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
