@@ -3,317 +3,638 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="apple-itunes-app" content="app-id=0000000000">
 <title>Mochi — Cat Care AI</title>
 <meta name="description" content="Cats hide illness until it's too late. Mochi's AI helps you read the signs — eye scans, litter analysis, mood reader, and more.">
 <meta property="og:title" content="Mochi — Cat Care AI">
 <meta property="og:description" content="The AI care companion for your cat. Catch what they're hiding.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://alperencift.github.io/mochi-website/">
+<meta property="og:url" content="https://alperenciftlikci.github.io/cattrack/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐱%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --primary: #FF9B7A;
   --primary-dark: #E87A57;
+  --primary-light: #FFD0BD;
   --cream: #FFF4E8;
+  --cream-deep: #FCE7D2;
   --mint: #7DD3A4;
-  --coral: #FF6B6B;
-  --bg: #FFFBF6;
+  --coral: #FF8A8A;
+  --amber: #FFB547;
+  --lavender: #C5B8E6;
+  --bg: #FFFCF8;
   --surface: #FFFFFF;
-  --text: #2C2C2E;
-  --text-secondary: #6B6B70;
-  --border: #F0E6DA;
-  --radius-md: 16px;
-  --radius-lg: 24px;
+  --text: #1F1F23;
+  --text-secondary: #6B6B72;
+  --text-muted: #9A9AA0;
+  --border: #F2E8DC;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
   --radius-pill: 999px;
-  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.06);
-  --max-width: 1100px;
+  --shadow-soft: 0 2px 8px rgba(232, 122, 87, 0.06), 0 12px 32px rgba(232, 122, 87, 0.08);
+  --shadow-strong: 0 16px 48px rgba(232, 122, 87, 0.18);
+  --max-width: 1140px;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1C1C1E;
-    --surface: #2C2C2E;
+    --bg: #15131A;
+    --surface: #1E1B22;
     --text: #F5F5F7;
-    --text-secondary: #A8A8AD;
-    --cream: #2A2522;
-    --border: #3A3A3C;
+    --text-secondary: #B0B0B8;
+    --text-muted: #707078;
+    --cream: #2A2520;
+    --cream-deep: #332B25;
+    --border: #2A2630;
     --primary: #FFAD8E;
+    --primary-light: #44352E;
   }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "SF Pro Display", "Helvetica Neue", sans-serif;
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Helvetica Neue", sans-serif;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
-.container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
+.container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+/* Animated background blobs */
+.bg-decoration {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  animation: float 24s ease-in-out infinite;
+}
+.blob.b1 { width: 480px; height: 480px; background: var(--primary); top: -120px; left: -160px; animation-delay: 0s; }
+.blob.b2 { width: 380px; height: 380px; background: var(--lavender); top: 30%; right: -120px; animation-delay: -8s; }
+.blob.b3 { width: 420px; height: 420px; background: var(--mint); bottom: -160px; left: 30%; animation-delay: -16s; }
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.05); }
+  66% { transform: translate(-30px, 40px) scale(0.95); }
+}
+
+/* Nav */
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(255, 251, 246, 0.85);
+  background: rgba(255, 252, 248, 0.7);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0;
+  border-bottom: 1px solid rgba(242, 232, 220, 0.5);
+  padding: 14px 0;
 }
-@media (prefers-color-scheme: dark) { nav { background: rgba(28, 28, 30, 0.85); } }
+@media (prefers-color-scheme: dark) { nav { background: rgba(21, 19, 26, 0.75); border-bottom-color: rgba(42, 38, 48, 0.5); } }
 .nav-inner { display: flex; align-items: center; justify-content: space-between; }
-.logo { font-size: 22px; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 8px; }
-.logo-emoji { font-size: 28px; }
-.nav-links { display: flex; gap: 24px; align-items: center; }
-.nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
-.nav-links a:hover { color: var(--primary-dark); }
-.cta-pill {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: white !important;
-  padding: 10px 20px;
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-  font-size: 14px;
-  transition: transform 0.2s;
-}
-.cta-pill:hover { transform: translateY(-1px); }
-
-.hero {
-  padding: 80px 0 60px;
-  background: linear-gradient(180deg, var(--cream) 0%, var(--bg) 100%);
-  text-align: center;
-}
-.hero h1 {
-  font-size: clamp(36px, 6vw, 64px);
+.logo {
+  font-size: 22px;
   font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 16px;
-  letter-spacing: -0.02em;
-}
-.hero .tagline {
-  font-size: clamp(16px, 2vw, 20px);
-  color: var(--text-secondary);
-  max-width: 580px;
-  margin: 0 auto 32px;
-}
-.hero-emoji { font-size: 96px; display: block; margin-bottom: 24px; animation: bob 3s ease-in-out infinite; }
-@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-.appstore-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
-
-.appstore-badge {
-  display: inline-flex;
+  color: var(--primary-dark);
+  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 28px;
-  background: #000;
-  color: white;
-  border-radius: 12px;
-  text-decoration: none;
-  font-weight: 600;
+  letter-spacing: -0.02em;
 }
-.appstore-badge:hover { background: #1a1a1a; }
-.appstore-badge svg { width: 28px; height: 28px; fill: white; }
+.logo-emoji {
+  font-size: 28px;
+  display: inline-block;
+  animation: wiggle 8s ease-in-out infinite;
+}
+@keyframes wiggle {
+  0%, 90%, 100% { transform: rotate(0deg); }
+  93% { transform: rotate(-12deg); }
+  96% { transform: rotate(12deg); }
+}
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--primary-dark); }
+.coming-soon-chip {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 12px rgba(232, 122, 87, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.coming-soon-chip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 8px white;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 
-.mockup {
-  margin: 48px auto 0;
-  width: 280px;
-  height: 580px;
-  background: #1C1C1E;
-  border-radius: 48px;
-  padding: 12px;
-  box-shadow: 0 30px 80px rgba(255, 155, 122, 0.3);
+/* Hero */
+.hero {
+  padding: 90px 0 60px;
   position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 155, 122, 0.25);
+  color: var(--primary-dark);
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  letter-spacing: 0.01em;
+}
+@media (prefers-color-scheme: dark) {
+  .hero-tag { background: rgba(30, 27, 34, 0.7); }
+}
+.hero h1 {
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: 22px;
+  letter-spacing: -0.03em;
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero h1 .gradient-text {
+  background: linear-gradient(135deg, var(--primary-dark), var(--coral));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.hero .tagline {
+  font-size: clamp(17px, 1.8vw, 20px);
+  color: var(--text-secondary);
+  max-width: 620px;
+  margin: 0 auto 56px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+.hero-emoji {
+  font-size: 110px;
+  display: block;
+  margin-bottom: 32px;
+  animation: bob 3.6s ease-in-out infinite;
+  filter: drop-shadow(0 16px 24px rgba(232, 122, 87, 0.3));
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
+}
+
+/* Phone mockup */
+.mockup-wrap {
+  margin: 24px auto 0;
+  position: relative;
+  width: 320px;
+  height: 660px;
+}
+.mockup-glow {
+  position: absolute;
+  inset: -40px;
+  background: radial-gradient(circle, rgba(255, 155, 122, 0.4) 0%, transparent 60%);
+  filter: blur(40px);
+  z-index: 0;
+}
+.mockup {
+  position: relative;
+  z-index: 1;
+  width: 320px;
+  height: 660px;
+  background: #1C1C1E;
+  border-radius: 54px;
+  padding: 14px;
+  box-shadow:
+    0 0 0 2px #2C2C2E,
+    0 20px 60px rgba(232, 122, 87, 0.4),
+    0 40px 100px rgba(0, 0, 0, 0.18);
 }
 .mockup::before {
   content: '';
   position: absolute;
-  top: 12px;
+  top: 14px;
   left: 50%;
   transform: translateX(-50%);
-  width: 100px;
-  height: 28px;
+  width: 108px;
+  height: 32px;
   background: #1C1C1E;
-  border-radius: 14px;
+  border-radius: 16px;
   z-index: 10;
 }
 .mockup-screen {
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, var(--cream), var(--surface));
-  border-radius: 36px;
+  background: linear-gradient(180deg, var(--cream-deep) 0%, var(--surface) 100%);
+  border-radius: 42px;
+  padding: 56px 22px 28px;
   display: flex;
   flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+.mockup-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.mockup-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
-  text-align: center;
+  font-size: 24px;
 }
-.mockup-emoji { font-size: 80px; margin-bottom: 16px; }
-.mockup-title { font-weight: 700; color: var(--primary-dark); margin-bottom: 8px; }
-.mockup-row { background: var(--surface); padding: 10px 16px; border-radius: 12px; width: 100%; margin: 4px 0; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.mockup-name { font-weight: 700; font-size: 15px; }
+.mockup-meta { font-size: 11px; color: var(--text-muted); }
+.mockup-cta {
+  padding: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 20px rgba(232, 122, 87, 0.35);
+}
+.mockup-cta-icon {
+  width: 36px; height: 36px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.mockup-cta-text { flex: 1; }
+.mockup-cta-title { font-size: 14px; font-weight: 700; }
+.mockup-cta-sub { font-size: 11px; opacity: 0.85; }
+.mockup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.mockup-tile {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.mockup-tile-emoji {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  margin: 0 auto 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.mockup-tile-emoji.eye { background: rgba(232, 122, 87, 0.15); }
+.mockup-tile-emoji.skin { background: rgba(125, 211, 164, 0.18); }
+.mockup-tile-emoji.dental { background: rgba(197, 184, 230, 0.25); }
+.mockup-tile-emoji.ear { background: rgba(255, 181, 71, 0.18); }
+.mockup-tile-label { font-size: 11px; font-weight: 600; color: var(--text); }
 
-section { padding: 80px 0; }
+/* Sections */
+section {
+  padding: 100px 0;
+  position: relative;
+}
 section h2 {
-  font-size: clamp(28px, 4vw, 40px);
+  font-size: clamp(32px, 4.5vw, 48px);
   font-weight: 800;
   text-align: center;
-  margin-bottom: 16px;
-  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
 }
 section .sub {
   text-align: center;
   color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto 48px;
+  max-width: 620px;
+  margin: 0 auto 56px;
+  font-size: 17px;
+  line-height: 1.6;
 }
+.section-kicker {
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--primary-dark);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin-bottom: 14px;
+}
+
+/* Feature grid */
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  gap: 24px;
 }
 .feature-card {
   background: var(--surface);
-  border-radius: var(--radius-md);
-  padding: 32px 24px;
-  box-shadow: var(--shadow-card);
-  transition: transform 0.3s;
+  border-radius: var(--radius-lg);
+  padding: 36px 30px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.feature-card:hover { transform: translateY(-4px); }
-.feature-emoji { font-size: 48px; display: block; margin-bottom: 16px; }
-.feature-card h3 { font-size: 20px; margin-bottom: 8px; }
-.feature-card p { color: var(--text-secondary); font-size: 15px; }
+.feature-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+.feature-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-strong);
+}
+.feature-card:hover::after { transform: scaleX(1); }
+.feature-icon {
+  width: 64px; height: 64px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 22px;
+  background: linear-gradient(135deg, var(--cream), var(--primary-light));
+  transition: transform 0.4s ease;
+}
+.feature-card:hover .feature-icon { transform: rotate(-8deg) scale(1.05); }
+.feature-card h3 { font-size: 21px; margin-bottom: 10px; font-weight: 700; letter-spacing: -0.01em; }
+.feature-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
 
+/* Steps */
 .steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-  max-width: 900px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 32px;
+  max-width: 980px;
   margin: 0 auto;
 }
-.step { text-align: center; padding: 24px; }
+.step {
+  text-align: center;
+  padding: 24px;
+  position: relative;
+}
 .step-num {
   display: inline-flex;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 800;
-  margin-bottom: 16px;
-}
-.step h3 { font-size: 18px; margin-bottom: 8px; }
-.step p { color: var(--text-secondary); font-size: 14px; }
-
-.pricing {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-.price-card {
-  background: var(--surface);
-  border-radius: var(--radius-md);
-  padding: 32px 24px;
-  border: 2px solid var(--border);
+  margin-bottom: 20px;
+  box-shadow: 0 12px 32px rgba(232, 122, 87, 0.35);
   position: relative;
 }
-.price-card.featured { border-color: var(--primary); }
-.price-badge {
+.step-num::after {
+  content: '';
   position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--primary-dark);
-  color: white;
-  padding: 4px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  font-weight: 700;
+  inset: -6px;
+  border: 2px dashed var(--primary-light);
+  border-radius: 50%;
+  opacity: 0.5;
 }
-.price-card h3 { margin-bottom: 8px; }
-.price-card .price { font-size: 36px; font-weight: 800; color: var(--primary-dark); margin-bottom: 8px; }
-.price-card .desc { font-size: 14px; color: var(--text-secondary); }
+.step h3 { font-size: 20px; margin-bottom: 10px; font-weight: 700; letter-spacing: -0.01em; }
+.step p { color: var(--text-secondary); font-size: 15px; line-height: 1.55; }
 
+/* Stats row */
+.stats-banner {
+  background: linear-gradient(135deg, var(--cream-deep), var(--cream));
+  padding: 60px 0;
+  margin: 0;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.stat-num {
+  font-size: clamp(36px, 4vw, 48px);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-dark), var(--coral));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.stat-label { color: var(--text-secondary); font-size: 14px; font-weight: 500; }
+
+/* FAQ */
 details {
   background: var(--surface);
   border-radius: var(--radius-md);
-  padding: 16px 20px;
+  padding: 20px 24px;
   margin-bottom: 12px;
   border: 1px solid var(--border);
+  transition: all 0.3s;
 }
-summary { font-weight: 600; cursor: pointer; padding: 4px 0; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+details:hover { border-color: var(--primary-light); }
+details[open] {
+  background: linear-gradient(135deg, var(--surface), var(--cream));
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-soft);
+}
+summary {
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 0;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
 summary::-webkit-details-marker { display: none; }
-summary::after { content: '+'; font-size: 24px; color: var(--primary); transition: transform 0.2s; }
+summary::after {
+  content: '+';
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--primary);
+  transition: transform 0.3s;
+  line-height: 1;
+}
 details[open] summary::after { transform: rotate(45deg); }
-details p { margin-top: 12px; color: var(--text-secondary); }
-.faq { max-width: 720px; margin: 0 auto; }
+details p { margin-top: 14px; color: var(--text-secondary); font-size: 15px; line-height: 1.65; }
+.faq { max-width: 760px; margin: 0 auto; }
 
+/* Coming soon CTA */
+.cta-banner {
+  text-align: center;
+  padding: 100px 0 120px;
+  background: linear-gradient(180deg, transparent 0%, var(--cream) 100%);
+}
+.cta-banner h2 {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cta-banner .sub { margin-bottom: 32px; }
+.notify-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: var(--surface);
+  border: 1.5px solid var(--primary-light);
+  color: var(--primary-dark);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.notify-soon::before {
+  content: '⏳';
+  font-size: 16px;
+}
+
+/* Footer */
 footer {
   background: var(--surface);
   border-top: 1px solid var(--border);
-  padding: 48px 0 24px;
+  padding: 56px 0 28px;
   text-align: center;
+}
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin-bottom: 18px;
 }
 .footer-links {
   display: flex;
-  gap: 24px;
+  gap: 28px;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
-.footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+.footer-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
 .footer-links a:hover { color: var(--primary-dark); }
-.copyright { color: var(--text-secondary); font-size: 13px; }
+.copyright { color: var(--text-muted); font-size: 13px; }
 
-.reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s; }
+/* Reveal animations */
+.reveal { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
-@media (max-width: 600px) {
-  .nav-links a:not(.cta-pill) { display: none; }
-  section { padding: 60px 0; }
-  .mockup { transform: scale(0.85); }
+@media (max-width: 700px) {
+  .nav-links a:not(.coming-soon-chip) { display: none; }
+  section { padding: 70px 0; }
+  .mockup-wrap { transform: scale(0.85); margin-top: 0; }
+  .hero { padding: 60px 0 40px; }
 }
 </style>
 </head>
 <body>
+
+<div class="bg-decoration">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+
 <nav>
   <div class="container nav-inner">
     <div class="logo"><span class="logo-emoji">🐱</span> Mochi</div>
     <div class="nav-links">
       <a href="#features">Features</a>
       <a href="#how">How it works</a>
-      <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
-      <a href="https://apps.apple.com/app/id0000000000" class="cta-pill">Download</a>
+      <span class="coming-soon-chip">Coming Soon</span>
     </div>
   </div>
 </nav>
 
 <header class="hero">
   <div class="container">
+    <span class="hero-tag">🐾 The AI care companion for your cat</span>
     <span class="hero-emoji">🐱</span>
-    <h1>Cats hide illness<br>until it's too late.</h1>
-    <p class="tagline">Mochi's AI helps you read the signs — before they become emergencies. Eye scans, litter analysis, mood reader, and more.</p>
-    <div class="appstore-row">
-      <a href="https://apps.apple.com/app/id0000000000" class="appstore-badge">
-        <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-        <div>
-          <div style="font-size:11px;line-height:1">Download on the</div>
-          <div style="font-size:18px;font-weight:800;line-height:1">App Store</div>
+    <h1>Cats hide illness<br><span class="gradient-text">until it's too late.</span></h1>
+    <p class="tagline">Mochi reads the signs your cat can't tell you about — eye scans, litter analysis, mood reader, meow translator, and an AI vet chat. All in one beautifully calm app.</p>
+    <div class="mockup-wrap">
+      <div class="mockup-glow"></div>
+      <div class="mockup">
+        <div class="mockup-screen">
+          <div class="mockup-header">
+            <div class="mockup-avatar">🐱</div>
+            <div>
+              <div class="mockup-name">Mochi</div>
+              <div class="mockup-meta">3y · Tabby · 4.5 kg</div>
+            </div>
+          </div>
+          <div class="mockup-cta">
+            <div class="mockup-cta-icon">📝</div>
+            <div class="mockup-cta-text">
+              <div class="mockup-cta-title">Daily Check-In</div>
+              <div class="mockup-cta-sub">30 seconds to spot patterns early</div>
+            </div>
+          </div>
+          <div class="mockup-grid">
+            <div class="mockup-tile"><div class="mockup-tile-emoji eye">👁</div><div class="mockup-tile-label">Eye</div></div>
+            <div class="mockup-tile"><div class="mockup-tile-emoji skin">🧴</div><div class="mockup-tile-label">Skin</div></div>
+            <div class="mockup-tile"><div class="mockup-tile-emoji dental">🦷</div><div class="mockup-tile-label">Dental</div></div>
+            <div class="mockup-tile"><div class="mockup-tile-emoji ear">👂</div><div class="mockup-tile-label">Ear</div></div>
+          </div>
         </div>
-      </a>
-    </div>
-    <div class="mockup">
-      <div class="mockup-screen">
-        <div class="mockup-emoji">🐱</div>
-        <div class="mockup-title">Mochi · 5y · Tabby Mix</div>
-        <div style="font-size:11px;color:var(--text-secondary);margin-bottom:16px">🔥 7-day streak</div>
-        <div class="mockup-row">👁 Eye Scan · Normal</div>
-        <div class="mockup-row">💧 Litter · 2 today</div>
-        <div class="mockup-row">🎙 Translator ready</div>
-        <div class="mockup-row" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;">📝 Daily Check-in (30s)</div>
       </div>
     </div>
   </div>
@@ -321,126 +642,121 @@ footer {
 
 <section id="features">
   <div class="container">
+    <div class="section-kicker">Everything you need</div>
     <h2>Five pillars of cat care</h2>
-    <p class="sub">Every feature targets what cats biologically hide.</p>
+    <p class="sub">Every feature targets exactly what cats biologically hide — built with veterinary frameworks and Gemini multimodal AI.</p>
     <div class="feature-grid">
       <div class="feature-card reveal">
-        <span class="feature-emoji">🔍</span>
+        <div class="feature-icon">🔍</div>
         <h3>Health Scanner</h3>
-        <p>Photo-based AI for eyes, skin, dental, and ear conditions. Catch nictitating membrane, tartar, ringworm before they progress.</p>
+        <p>Photo-based AI for eyes, skin, dental, and ear conditions. Catch nictitating membrane, tartar, ringworm before they progress to vet visits.</p>
       </div>
       <div class="feature-card reveal">
-        <span class="feature-emoji">💧</span>
+        <div class="feature-icon">💧</div>
         <h3>Litter Box AI</h3>
-        <p>Analyze stool & urine photos. 48-hour urinary emergency alerts. Pattern tracking for kidney and diabetes warning signs.</p>
+        <p>Analyze stool & urine photos for color, consistency and abnormalities. 48-hour urinary emergency alerts. Pattern tracking for kidney signs.</p>
       </div>
       <div class="feature-card reveal">
-        <span class="feature-emoji">🎙</span>
+        <div class="feature-icon">🎙</div>
         <h3>Cat Translator</h3>
-        <p>Record meows, get interpreted meanings — greeting, demand, stress, hunting. Science-backed AI classification.</p>
+        <p>Record meows, get interpreted meanings — greeting, demand, stress, hunting. Also translates your messages into how your cat would react.</p>
       </div>
       <div class="feature-card reveal">
-        <span class="feature-emoji">📸</span>
+        <div class="feature-icon">📸</div>
         <h3>Mood Reader</h3>
-        <p>Read ear position, pupils, tail, posture from a photo. Detect stress your cat is masking.</p>
+        <p>Read ear position, pupils, tail and posture from a photo. Detect stress your cat is masking long before behavioral changes appear.</p>
       </div>
       <div class="feature-card reveal">
-        <span class="feature-emoji">💬</span>
+        <div class="feature-icon">💬</div>
         <h3>AI Behavior Chat</h3>
-        <p>Ask anything about your cat. Mochi knows their age, breed, lifestyle — and gives contextualized advice.</p>
+        <p>Ask anything about your cat. Mochi knows their age, breed and lifestyle — and gives personalized, contextualized advice in seconds.</p>
       </div>
       <div class="feature-card reveal">
-        <span class="feature-emoji">📄</span>
+        <div class="feature-icon">📄</div>
         <h3>Vet Visit PDF</h3>
-        <p>One-tap export of scans, litter logs, weight, behavior — hand to your vet for a smarter appointment.</p>
+        <p>One-tap export of scans, litter logs, weight, behavior — hand to your vet for a smarter, data-backed appointment.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="how" style="background: var(--cream);">
+<div class="stats-banner">
   <div class="container">
+    <div class="stats">
+      <div class="reveal">
+        <div class="stat-num">10+</div>
+        <div class="stat-label">AI-powered features</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-num">40</div>
+        <div class="stat-label">Languages</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-num">175</div>
+        <div class="stat-label">Countries supported</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Private analysis</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="how">
+  <div class="container">
+    <div class="section-kicker">Simple flow</div>
     <h2>How Mochi works</h2>
-    <p class="sub">From your couch to early detection in three steps.</p>
+    <p class="sub">From your couch to early detection in three calm steps.</p>
     <div class="steps">
       <div class="step reveal">
         <div class="step-num">1</div>
         <h3>Tell us about your cat</h3>
-        <p>60-second setup. Name, age, photo. We tailor the care plan to your cat.</p>
+        <p>60-second setup — name, age, photo. Mochi tailors the entire care plan to your specific cat.</p>
       </div>
       <div class="step reveal">
         <div class="step-num">2</div>
         <h3>Scan when something's off</h3>
-        <p>Eye looks puffy? Litter clump huge? Snap a photo, get instant AI analysis.</p>
+        <p>Eye looks puffy? Litter clump huge? Snap a photo, get instant AI analysis grounded in feline medicine.</p>
       </div>
       <div class="step reveal">
         <div class="step-num">3</div>
         <h3>Catch issues early</h3>
-        <p>Track patterns. Get alerts. Walk into the vet with data — not guesses.</p>
+        <p>Track patterns. Get gentle alerts. Walk into the vet with data — not guesses or panic.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="pricing">
+<section id="faq">
   <div class="container">
-    <h2>Simple pricing</h2>
-    <p class="sub">3 days free. Cancel anytime.</p>
-    <div class="pricing">
-      <div class="price-card featured reveal">
-        <span class="price-badge">MOST POPULAR</span>
-        <h3>Weekly</h3>
-        <div class="price">$4.99<span style="font-size:16px;color:var(--text-secondary)">/wk</span></div>
-        <p class="desc">3-day free trial · cancel anytime</p>
-      </div>
-      <div class="price-card reveal">
-        <h3>Yearly</h3>
-        <div class="price">$39.99<span style="font-size:16px;color:var(--text-secondary)">/yr</span></div>
-        <p class="desc">Save 87% — best value</p>
-      </div>
-      <div class="price-card reveal">
-        <h3>Lifetime</h3>
-        <div class="price">$79.99</div>
-        <p class="desc">One-time. Forever.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="faq" style="background: var(--cream);">
-  <div class="container">
+    <div class="section-kicker">Common questions</div>
     <h2>Frequently asked</h2>
     <div class="faq">
       <details class="reveal"><summary>Is the AI as accurate as a vet?</summary><p>No — Mochi is an early-warning tool, not a diagnostic device. The AI flags patterns and concerns to discuss with your vet, who remains the authority on medical decisions.</p></details>
-      <details class="reveal"><summary>Does Mochi work with multiple cats?</summary><p>Yes. Add unlimited cat profiles. The compatibility checker also helps multi-cat households read dynamics.</p></details>
-      <details class="reveal"><summary>What happens after the 3-day free trial?</summary><p>You'll be billed at the rate you selected. Cancel anytime from the App Store before the trial ends to avoid charges.</p></details>
-      <details class="reveal"><summary>Is my data private?</summary><p>Yes. Photos and audio are processed via Firebase AI Logic with App Check enforcement. You can delete all your data anytime from Settings.</p></details>
-      <details class="reveal"><summary>Does the Cat Translator really work?</summary><p>Cat meows evolved primarily for human communication — frequency and pattern carry meaning. Mochi classifies them into known vocalization categories. Treat it as informed entertainment plus useful behavior data.</p></details>
-      <details class="reveal"><summary>What's the difference vs TTcare or MeowTalk?</summary><p>Mochi is cat-only (not dog/cat mixed), all-in-one (scans + litter + translator + chat + vet PDF), and uses Gemini 2.5 multimodal AI for richer analysis.</p></details>
+      <details class="reveal"><summary>Does Mochi work with multiple cats?</summary><p>Yes. Add unlimited cat profiles. The compatibility checker also helps multi-cat households read dynamics between cats.</p></details>
+      <details class="reveal"><summary>Is my data private?</summary><p>Yes. Photos and audio are processed via Firebase AI Logic with App Check enforcement. Personal data stays on your device — only the analysis result is stored. You can delete everything anytime from Settings.</p></details>
+      <details class="reveal"><summary>Does the Cat Translator really work?</summary><p>Cat meows evolved primarily for human communication — frequency, duration, and pattern carry meaning. Mochi classifies them into known vocalization categories. Treat it as informed entertainment plus useful behavior data.</p></details>
+      <details class="reveal"><summary>What's the difference vs other cat apps?</summary><p>Mochi is cat-only (not dog/cat mixed), all-in-one (scans + litter + translator + chat + vet PDF + journal + memories), and uses Gemini 2.5 multimodal AI for richer, more accurate analysis.</p></details>
+      <details class="reveal"><summary>Which devices does Mochi support?</summary><p>iPhone with iOS 18 or later. Optimized for iPhone 17 Pro Max but works beautifully on all modern iPhones.</p></details>
     </div>
   </div>
 </section>
 
-<section style="text-align:center; padding-bottom: 100px;">
+<section class="cta-banner">
   <div class="container">
-    <h2>Read the signs your cat can't tell you about.</h2>
-    <p class="sub">Download Mochi today. First 3 days free.</p>
-    <a href="https://apps.apple.com/app/id0000000000" class="appstore-badge">
-      <svg viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-      <div>
-        <div style="font-size:11px;line-height:1">Download on the</div>
-        <div style="font-size:18px;font-weight:800;line-height:1">App Store</div>
-      </div>
-    </a>
+    <h2>Read the signs your cat<br>can't tell you about.</h2>
+    <p class="sub">Mochi is launching on the App Store soon. Built with love for cats and the humans who care about them.</p>
+    <span class="notify-soon">Launching soon · Stay tuned</span>
   </div>
 </section>
 
 <footer>
   <div class="container">
-    <div class="logo" style="justify-content:center;margin-bottom:16px"><span class="logo-emoji">🐱</span> Mochi</div>
+    <div class="footer-logo"><span class="logo-emoji">🐱</span> Mochi</div>
     <div class="footer-links">
       <a href="privacy-policy.html">Privacy Policy</a>
-      <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Terms of Use</a>
+      <a href="terms.html">Terms of Use</a>
       <a href="mailto:support@mochi-app.com">Contact</a>
     </div>
     <p class="copyright">© 2026 Mochi · Cat Care AI · Made with ❤️ for cats and their humans</p>
@@ -449,8 +765,13 @@ footer {
 
 <script>
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-  }, { threshold: 0.15 });
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 50);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
